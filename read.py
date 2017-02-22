@@ -41,6 +41,8 @@ def load_code_cell(cell_elt):
 def load_notebook(fp):
     tree = parse(fp)
     nb = new_notebook()
+    metadata_elt = tree.xpath('//script[@id="notebook_metadata_json"]')[0]
+    nb.metadata = from_dict(json.loads(metadata_elt.text_content()))
     for cell_elt in tree.xpath('//div[starts-with(@class, "cell ")]'):
         if 'text_cell' in cell_elt.get('class'):
             md_elt = cell_elt.xpath('.//pre[contains(@class, "markdown_raw")]')[0]

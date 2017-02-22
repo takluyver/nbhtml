@@ -7,6 +7,10 @@
   display: none;
 }
 </style>
+
+<script type="application/json" id="notebook_metadata_json">
+{{ nb.metadata | json }}
+</script>
 {%- endblock html_head -%}
 
 {% block markdowncell scoped %}

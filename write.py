@@ -4,6 +4,9 @@ import os.path
 
 from nbconvert.exporters import HTMLExporter
 
+def tojson(d):
+    return json.dumps(d, sort_keys=True, indent=2)
+
 def error_data(output):
     output = output.copy()
     del output['output_type']
@@ -32,6 +35,7 @@ class SavingHTMLExporter(HTMLExporter):
         yield from super().default_filters()
         yield ('json_non_shown_output', self.json_non_shown_output)
         yield ('json_error_data', error_data)
+        yield ('json', tojson)
 
 if __name__ == '__main__':
     exp = SavingHTMLExporter()
