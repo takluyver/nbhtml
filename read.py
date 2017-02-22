@@ -33,7 +33,10 @@ def load_output(elt):
 
 def load_code_cell(cell_elt):
     code_elt = cell_elt.xpath('.//div[@class="input_area"]//pre')[0]
-    cell = new_code_cell(code_elt.text_content())
+    code = code_elt.text_content()
+    if code.endswith('\n'):
+        code = code[:-1]
+    cell = new_code_cell(code)
     for output in cell_elt.xpath('.//div[@class="output_area"]'):
         cell.outputs.append(load_output(output))
     return cell
