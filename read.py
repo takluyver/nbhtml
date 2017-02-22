@@ -31,6 +31,19 @@ def load_output(elt):
         out.data['text/plain'] = pre.text_content()
     return out
 
+def load_cell(cell_elt):
+    if 'text_cell' in cell_elt.classes:
+        md_elt = cell_elt.xpath('.//pre[contains(@class, "markdown_raw")]')[0]
+        cell = new_markdown_cell(md_elt.text_content())
+    elif 'code_cell' in cell_elt.classes:
+        cell = load_code_cell(cell_elt)
+    else:
+        raise ValueError("Unhandled cell type", cell_elt.get('class'))
+
+    metadata_elt = cell_elt.getprevious()
+    cell.metadata = from_dict(json.loads(metadata_elt.text_content()))
+    return cell
+
 def load_code_cell(cell_elt):
     code_elt = cell_elt.xpath('.//div[@class="input_area"]//pre')[0]
     code = code_elt.text_content()
@@ -39,6 +52,10 @@ def load_code_cell(cell_elt):
     cell = new_code_cell(code)
     for output in cell_elt.xpath('.//div[@class="output_area"]'):
         cell.outputs.append(load_output(output))
+
+    ec = cell_elt.getnext().get('data-execution-count')
+    cell.execution_count = json.loads(ec)
+
     return cell
 
 def load_notebook(fp):
@@ -47,11 +64,7 @@ def load_notebook(fp):
     metadata_elt = tree.xpath('//script[@id="notebook_metadata_json"]')[0]
     nb.metadata = from_dict(json.loads(metadata_elt.text_content()))
     for cell_elt in tree.xpath('//div[starts-with(@class, "cell ")]'):
-        if 'text_cell' in cell_elt.get('class'):
-            md_elt = cell_elt.xpath('.//pre[contains(@class, "markdown_raw")]')[0]
-            nb.cells.append(new_markdown_cell(md_elt.text_content()))
-        elif 'code_cell' in cell_elt.classes:
-            nb.cells.append(load_code_cell(cell_elt))
+        nb.cells.append(load_cell(cell_elt))
     
     return nb
 

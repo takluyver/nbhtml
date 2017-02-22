@@ -13,6 +13,16 @@
 </script>
 {%- endblock html_head -%}
 
+{% block any_cell %}
+<pre class="hidden cell_metadata_json">{{cell.metadata | json | escape }}</pre>
+{{ super() }}
+{% endblock any_cell %}
+
+{% block codecell %}
+{{ super() }}
+<div class="hidden" data-execution-count="{{ cell.execution_count | json }}" />
+{%- endblock codecell %}
+
 {% block markdowncell scoped %}
 <div class="cell border-box-sizing text_cell rendered">
 <pre class="hidden markdown_raw">{{ cell.source }}</pre>
