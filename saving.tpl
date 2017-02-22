@@ -21,13 +21,6 @@
 </div>
 {%- endblock markdowncell %}
 
-
-{% block execute_result -%}
-<div class="hidden" data-execution-count="{{ output.execution_count }}"/>
-{{ super() }}
-{%- endblock execute_result %}
-
-
 {% block output_area_prompt %}
 {{ super() }}
 
@@ -35,3 +28,9 @@
 <pre class="hidden other_output_fmts">{{ output | json_non_shown_output | escape }}</pre>
 {%- endif -%}
 {% endblock output_area_prompt %}
+
+
+{% block error -%}
+<pre class="hidden error_json">{{output | json_error_data | escape }}</pre>
+{{ super() }}
+{%- endblock error %}

@@ -4,6 +4,11 @@ import os.path
 
 from nbconvert.exporters import HTMLExporter
 
+def error_data(output):
+    output = output.copy()
+    del output['output_type']
+    return json.dumps(output, sort_keys=True)
+
 class SavingHTMLExporter(HTMLExporter):
     """Export HTML with enough information to reconstruct the notebook.
     """
@@ -26,6 +31,7 @@ class SavingHTMLExporter(HTMLExporter):
     def default_filters(self):
         yield from super().default_filters()
         yield ('json_non_shown_output', self.json_non_shown_output)
+        yield ('json_error_data', error_data)
 
 if __name__ == '__main__':
     exp = SavingHTMLExporter()

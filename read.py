@@ -13,10 +13,17 @@ def load_output(elt):
         pre = stream[0].xpath('pre')[0]
         return new_output('stream', name=name, text=pre.text_content())
 
+    subarea = elt.xpath('.//div[contains(@class, "output_subarea")]')[0]
+
+    if 'output_error' in subarea.classes:
+        err_json = elt.xpath('.//pre[contains(@class, "error_json")]')[0]
+        d = json.loads(err_json.text_content())
+        return new_output('error', **d)
+
+    # If we've got here, output must be display_data or execute_result
     op_json = elt.xpath('.//pre[contains(@class, "other_output_fmts")]')[0]
     out = from_dict(json.loads(op_json.text_content()))
 
-    subarea = elt.xpath('.//div[contains(@class, "output_subarea")]')[0]
     if 'output_html' in subarea.classes:
         out.data['text/html'] = ''.join(tostring(el, encoding='unicode') for el in subarea)
     if 'output_text' in subarea.classes:
