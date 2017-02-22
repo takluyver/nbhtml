@@ -1,5 +1,6 @@
+import json
 from lxml.html import parse, tostring
-from nbformat import NotebookNode, write
+from nbformat import NotebookNode, write, from_dict
 from nbformat.v4 import (new_notebook, new_code_cell, new_markdown_cell,
     new_output)
 
@@ -12,20 +13,16 @@ def load_output(elt):
         pre = stream[0].xpath('pre')[0]
         return new_output('stream', name=name, text=pre.text_content())
 
+    op_json = elt.xpath('.//pre[contains(@class, "other_output_fmts")]')[0]
+    out = from_dict(json.loads(op_json.text_content()))
+
     subarea = elt.xpath('.//div[contains(@class, "output_subarea")]')[0]
-    op_type = 'display_data'
-    kwargs = {}
-    if 'output_execute_result' in subarea.classes:
-        op_type = 'execute_result'
-        ec = elt.xpath('.//div[@data-execution-count]')[0].get('data-execution-count')
-        kwargs['execution_count'] = int(ec)
-    data = {}
     if 'output_html' in subarea.classes:
-        data['text/html'] = ''.join(tostring(el) for el in subarea)
+        out.data['text/html'] = ''.join(tostring(el, encoding='unicode') for el in subarea)
     if 'output_text' in subarea.classes:
         pre = subarea.xpath('pre')[0]
-        data['text/plain'] = pre.text_content()
-    return new_output(op_type, data=data, **kwargs)
+        out.data['text/plain'] = pre.text_content()
+    return out
 
 def load_code_cell(cell_elt):
     code_elt = cell_elt.xpath('.//div[@class="input_area"]//pre')[0]

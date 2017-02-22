@@ -26,3 +26,12 @@
 <div class="hidden" data-execution-count="{{ output.execution_count }}"/>
 {{ super() }}
 {%- endblock execute_result %}
+
+
+{% block output_area_prompt %}
+{{ super() }}
+
+{%- if output.output_type in ('execute_result', 'display_data') -%}
+<pre class="hidden other_output_fmts">{{ output | json_non_shown_output | escape }}</pre>
+{%- endif -%}
+{% endblock output_area_prompt %}
