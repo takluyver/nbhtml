@@ -1,6 +1,7 @@
 from copy import deepcopy
 import json
 import os.path
+import sys
 
 from nbconvert.exporters import HTMLExporter
 
@@ -37,10 +38,14 @@ class SavingHTMLExporter(HTMLExporter):
         yield ('json_error_data', error_data)
         yield ('json', tojson)
 
-if __name__ == '__main__':
+def convert(ipynb_file):
     exp = SavingHTMLExporter()
-    output, resource = exp.from_filename('Sample.ipynb')
-    output_file = 'Sample.html'
+    output, resource = exp.from_filename(ipynb_file)
+    output_file = ipynb_file + '.html'
     with open(output_file, 'w') as f:
         f.write(output)
+    return output_file
+
+if __name__ == '__main__':
+    output_file = convert(sys.argv[1])
     print('Saved', output_file)

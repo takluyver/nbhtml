@@ -1,5 +1,7 @@
 import json
 from lxml.html import parse, tostring
+import sys
+
 from nbformat import NotebookNode, write, from_dict
 from nbformat.v4 import (new_notebook, new_code_cell, new_markdown_cell,
     new_output)
@@ -75,8 +77,9 @@ def load_notebook(fp):
     return nb
 
 if __name__ == '__main__':
-    with open('Sample.html') as f:
+    with open(sys.argv[1]) as f:
         nb = load_notebook(f)
 
     write(nb, 'test-loaded.ipynb')
+    print('Saved test-loaded.ipynb')
         
