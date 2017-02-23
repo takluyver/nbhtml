@@ -26,9 +26,13 @@ def load_output(elt):
 
     if 'output_html' in subarea.classes:
         out.data['text/html'] = ''.join(tostring(el, encoding='unicode') for el in subarea)
-    if 'output_text' in subarea.classes:
+    elif 'output_text' in subarea.classes:
         pre = subarea.xpath('pre')[0]
         out.data['text/plain'] = pre.text_content()
+    elif 'output_png' in subarea.classes:
+        src = subarea.xpath('img')[0].get('src')
+        assert src.startswith('data:image/png;base64,'), src[:30]
+        out.data['image/png'] = src[len('data:image/png;base64,'):]
     return out
 
 def load_cell(cell_elt):
