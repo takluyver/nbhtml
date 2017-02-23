@@ -27,7 +27,10 @@ class SavingHTMLExporter(HTMLExporter):
         output = deepcopy(output)
         for fmt in self.config.NbConvertBase.display_data_priority:
             if fmt in output.data:
-                del output.data[fmt]
+                # ANSI text and markdown are transformed when converting to HTML,
+                # so we need to store their raw data too.
+                if fmt not in {'text/plain', 'text/markdown'}:
+                    del output.data[fmt]
                 break
 
         return json.dumps(output, sort_keys=True)
