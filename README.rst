@@ -1,5 +1,12 @@
 This *experimental* project tries to save Jupyter notebooks as HTML and read them back.
 
+To try it::
+
+    python3 -m nbhtml.write Sample.ipynb
+    python3 -m nbhtml.read Sample.ipynb.html
+
+    diff from_html.ipynb Sample.ipynb
+
 This could one day be combined with a project like `ipymd
 <https://github.com/rossant/ipymd>`__ to save notebooks in two complementary
 formats:

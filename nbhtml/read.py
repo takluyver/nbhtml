@@ -80,6 +80,6 @@ if __name__ == '__main__':
     with open(sys.argv[1]) as f:
         nb = load_notebook(f)
 
-    write(nb, 'test-loaded.ipynb')
-    print('Saved test-loaded.ipynb')
+    write(nb, 'from_html.ipynb')
+    print('Saved from_html.ipynb')
         
