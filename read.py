@@ -25,7 +25,7 @@ def load_output(elt):
     out = from_dict(json.loads(op_json.text_content()))
 
     if 'output_html' in subarea.classes:
-        out.data['text/html'] = ''.join(tostring(el, encoding='unicode') for el in subarea)
+        out.data['text/html'] = ''.join(tostring(el, encoding='unicode') for el in subarea).strip()
     elif 'output_text' in subarea.classes:
         pre = subarea.xpath('pre')[0]
         out.data['text/plain'] = pre.text_content()
@@ -53,6 +53,8 @@ def load_code_cell(cell_elt):
     code = code_elt.text_content()
     if code.endswith('\n'):
         code = code[:-1]
+    if code == ' ':  # Empty cell gains a space in HTML conversion
+        code = ''
     cell = new_code_cell(code)
     for output in cell_elt.xpath('.//div[@class="output_area"]'):
         cell.outputs.append(load_output(output))
