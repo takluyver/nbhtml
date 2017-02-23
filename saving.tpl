@@ -20,7 +20,7 @@
 
 {% block codecell %}
 {{ super() }}
-<div class="hidden" data-execution-count="{{ cell.execution_count | json }}" />
+<div class="hidden" data-execution-count="{{ cell.execution_count | json }}"></div>
 {%- endblock codecell %}
 
 {% block markdowncell scoped %}
